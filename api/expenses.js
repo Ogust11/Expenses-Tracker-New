@@ -1,16 +1,24 @@
-// A simple in-memory array to store expenses.
-// NOTE: In a real-world app, you would use a persistent database (like MongoDB, Postgres, etc.).
+// In-memory store (Resets on server restart/cold start)
 let expenses = [];
 
-/**
- * Handles incoming API requests to /api/expenses.
- * @param {import('@vercel/node').VercelRequest} req - The request object.
- * @param {import('@vercel/node').VercelResponse} res - The response object.
- */
 export default function handler(req, res) {
+  // 1. Enable CORS (Optional but recommended for APIs)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  // Handle Preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   try {
     if (req.method === 'GET') {
-      // 📝 GET: Return all expenses
       return res.status(200).json({
         success: true,
         count: expenses.length,
@@ -18,18 +26,15 @@ export default function handler(req, res) {
       });
 
     } else if (req.method === 'POST') {
-      // 📝 POST: Add a new expense
       const { amount, description, category, date } = req.body;
 
-      // ✅ Error Management for missing fields
       if (!amount || !description || !category || !date) {
         return res.status(400).json({
           success: false,
-          error: 'Missing required fields: amount, description, category, and date are required.',
+          error: 'Missing required fields.',
         });
       }
 
-      // ⚙️ Validate amount is a number
       const parsedAmount = parseFloat(amount);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
         return res.status(400).json({
@@ -38,28 +43,23 @@ export default function handler(req, res) {
         });
       }
 
-      // ➕ Create a new expense object
       const newExpense = {
-        id: Date.now(), // Simple unique ID
+        id: Date.now().toString(), // String ID is safer
         amount: parsedAmount,
         description,
         category,
-        date: new Date(date).toISOString().split('T')[0], // Standardize date format
+        date: new Date(date).toISOString().split('T')[0],
         createdAt: new Date().toISOString(),
       };
 
-      // 💾 Add to the in-memory array
       expenses.push(newExpense);
 
-      // 🥳 Send success response
       return res.status(201).json({
         success: true,
         data: newExpense,
       });
 
     } else {
-      // 🚫 Method Not Allowed
-      res.setHeader('Allow', ['GET', 'POST']);
       return res.status(405).json({
         success: false,
         error: `Method ${req.method} Not Allowed`,
@@ -69,7 +69,7 @@ export default function handler(req, res) {
     console.error('API Error:', error);
     return res.status(500).json({
       success: false,
-      error: 'Server Error: Could not process the request.',
+      error: 'Server Error',
     });
   }
 }
