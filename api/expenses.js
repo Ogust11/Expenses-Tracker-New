@@ -2,19 +2,18 @@
 let expenses = [];
 
 export default function handler(req, res) {
-  // 1. Enable CORS (Optional but recommended for APIs)
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle Preflight requests
+  // Handle Preflight requests (OPTIONS)
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   try {
@@ -28,6 +27,7 @@ export default function handler(req, res) {
     } else if (req.method === 'POST') {
       const { amount, description, category, date } = req.body;
 
+      // Validation
       if (!amount || !description || !category || !date) {
         return res.status(400).json({
           success: false,
@@ -44,7 +44,7 @@ export default function handler(req, res) {
       }
 
       const newExpense = {
-        id: Date.now().toString(), // String ID is safer
+        id: crypto.randomUUID(), // Node 24 supports this natively for better IDs
         amount: parsedAmount,
         description,
         category,
