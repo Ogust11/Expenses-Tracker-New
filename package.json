@@ -8,9 +8,9 @@
     "deploy": "vercel"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "dependencies": {
-    "vercel": "^32.0.0"
+    "vercel": "latest"
   }
 }
