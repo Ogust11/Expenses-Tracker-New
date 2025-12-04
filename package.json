@@ -1,0 +1,13 @@
+{
+  "name": "vercel-serverless-expense-tracker",
+  "version": "1.0.0",
+  "description": "A simple serverless expense tracker API deployed on Vercel.",
+  "main": "api/expenses.js",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel"
+  },
+  "dependencies": {
+    "@vercel/node": "^3.0.7"
+  }
+}
