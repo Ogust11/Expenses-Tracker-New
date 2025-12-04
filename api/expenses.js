@@ -10,7 +10,7 @@ let expenses = [];
 export default function handler(req, res) {
   try {
     if (req.method === 'GET') {
-      // GET: Return all expenses
+      // 📝 GET: Return all expenses
       return res.status(200).json({
         success: true,
         count: expenses.length,
@@ -18,10 +18,10 @@ export default function handler(req, res) {
       });
 
     } else if (req.method === 'POST') {
-      // POST: Add a new expense
+      // 📝 POST: Add a new expense
       const { amount, description, category, date } = req.body;
 
-      // Error Management for missing fields
+      // ✅ Error Management for missing fields
       if (!amount || !description || !category || !date) {
         return res.status(400).json({
           success: false,
@@ -29,7 +29,7 @@ export default function handler(req, res) {
         });
       }
 
-      // Validate amount is a number
+      // ⚙️ Validate amount is a number
       const parsedAmount = parseFloat(amount);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
         return res.status(400).json({
@@ -48,17 +48,17 @@ export default function handler(req, res) {
         createdAt: new Date().toISOString(),
       };
 
-      // Add to the in-memory array
+      // 💾 Add to the in-memory array
       expenses.push(newExpense);
 
-      // Send success response
+      // 🥳 Send success response
       return res.status(201).json({
         success: true,
         data: newExpense,
       });
 
     } else {
-      // Method Not Allowed
+      // 🚫 Method Not Allowed
       res.setHeader('Allow', ['GET', 'POST']);
       return res.status(405).json({
         success: false,
