@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "functions": {
+    "api/expenses.js": {
+      "runtime": "@vercel/node@3.0.7"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/expenses",
+      "dest": "api/expenses.js"
+    },
+    {
+      "src": "/api/expenses/(.*)",
+      "dest": "api/expenses.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "index.html"
+    }
+  ]
+}
