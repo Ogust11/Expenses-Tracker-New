@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vercel Expense Tracker</title>
+    <title>Expense Tracker (Node 24)</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; }
         h1 { text-align: center; color: #111; }
@@ -53,7 +53,6 @@
         const expenseForm = document.getElementById('expense-form');
         const expensesList = document.getElementById('expenses-list');
 
-        // Set default date to today
         document.getElementById('date').valueAsDate = new Date();
 
         async function fetchExpenses() {
@@ -65,7 +64,6 @@
                 expensesList.innerHTML = ''; 
 
                 if (result.success && result.data.length > 0) {
-                    // Reverse to show newest first
                     result.data.reverse().forEach(expense => {
                         const li = document.createElement('li');
                         li.innerHTML = `
@@ -110,7 +108,7 @@
 
                 if (response.ok && result.success) {
                     expenseForm.reset();
-                    document.getElementById('date').valueAsDate = new Date(); // Reset date to today
+                    document.getElementById('date').valueAsDate = new Date(); 
                     fetchExpenses();
                 } else {
                     alert(`Error: ${result.error}`);
